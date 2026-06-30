@@ -45,20 +45,22 @@ jobs:
             sudo mv /home/ec2-user/task-manager-devops/infrastructure/nginx.conf_new /etc/nginx/nginx.conf
             sudo systemctl restart nginx
             
+            # Create .env file at the root (where the app looks for it)
+            echo "PORT=5000" > /home/ec2-user/task-manager-devops/.env
+            echo "JWT_SECRET=presidio_secret_key_123" >> /home/ec2-user/task-manager-devops/.env
+            echo "COOKIE_NAME=auth_token" >> /home/ec2-user/task-manager-devops/.env
+            echo "JWT_EXPIRES_IN=1h" >> /home/ec2-user/task-manager-devops/.env
+            echo "COOKIE_MAX_AGE=3600000" >> /home/ec2-user/task-manager-devops/.env
+            
             # Start Backend
             cd /home/ec2-user/task-manager-devops/server
             npm install
             
-            # Use pm2 to manage the process
             if ! command -v pm2 &> /dev/null
             then
                 sudo npm install -g pm2
             fi
             
-            # Check for server.js instead of index.js
             pm2 delete task-manager-api || true
             pm2 start server.js --name "task-manager-api"
             pm2 save
-            
-            # Diagnostic to check if it started
-            pm2 list
