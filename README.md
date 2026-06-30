@@ -1,5 +1,8 @@
 # Task Manager - Full Stack DevOps Project
 
+> [!TIP]
+> Looking for a technical explanation? Check out the [**Deep Dive: How it works**](DEEP_DIVE.md).
+
 A production-grade React application deployed on AWS using Terraform (Infrastructure as Code) and GitHub Actions (CI/CD).
 
 ## 🚀 Architecture Overview
