@@ -18,6 +18,7 @@ jobs:
 
       - name: Build Frontend
         run: |
+          cd client
           npm ci
           npm run build
 
@@ -27,7 +28,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "dist/*,server/*,infrastructure/nginx.conf_new"
+          source: "client/dist/**,server/**,infrastructure/nginx.conf_new"
           target: "/home/ec2-user/task-manager-devops"
 
       - name: Deploy on EC2
@@ -39,7 +40,7 @@ jobs:
           script: |
             # Update Frontend files
             sudo rm -rf /usr/share/nginx/html/*
-            sudo cp -r /home/ec2-user/task-manager-devops/dist/* /usr/share/nginx/html/
+            sudo cp -r /home/ec2-user/task-manager-devops/client/dist/* /usr/share/nginx/html/
             
             # Update Nginx Config
             sudo mv /home/ec2-user/task-manager-devops/infrastructure/nginx.conf_new /etc/nginx/nginx.conf
