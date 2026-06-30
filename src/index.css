@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-900 transition-colors duration-300;
+  }
+
+  .dark {
+    @apply bg-slate-950 text-slate-100;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-md border border-white/20 rounded-2xl shadow-xl transition-all duration-300;
+  }
+
+  /* Note: .dark context in Tailwind 4 can be handled via @media (prefers-color-scheme: dark) or manual class */
+  .dark .glass-card {
+    @apply bg-slate-900/40 border-slate-800/20;
+  }
+
+  .nav-link {
+    @apply text-slate-600 font-medium hover:text-indigo-600 transition-all;
+  }
+  
+  .dark .nav-link {
+    @apply text-slate-400 dark:hover:text-indigo-400;
+  }
+
+  .input-base {
+    @apply w-full px-4 py-3 rounded-xl border border-slate-200 bg-white/50 focus:ring-2 focus:ring-indigo-500 outline-none transition-all;
+  }
+
+  .dark .input-base {
+    @apply border-slate-800 bg-slate-900/50;
+  }
+
+  .button-primary {
+    @apply px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:-translate-y-0.5 transition-all active:translate-y-0;
+  }
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
