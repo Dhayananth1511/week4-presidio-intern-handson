@@ -49,12 +49,16 @@ jobs:
             cd /home/ec2-user/task-manager-devops/server
             npm install
             
-            # Use pm2 to manage the process (install if missing)
+            # Use pm2 to manage the process
             if ! command -v pm2 &> /dev/null
             then
                 sudo npm install -g pm2
             fi
             
+            # Check for server.js instead of index.js
             pm2 delete task-manager-api || true
-            pm2 start index.js --name "task-manager-api"
+            pm2 start server.js --name "task-manager-api"
             pm2 save
+            
+            # Diagnostic to check if it started
+            pm2 list
