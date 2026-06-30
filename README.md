@@ -363,3 +363,5 @@ You MUST add the following keys in the **Vercel Dashboard (Settings > Environmen
    ```bash
    vercel --prod
    ```
+
+Deploying now!
