@@ -16,9 +16,10 @@ jobs:
         with:
           node-version: 20
 
-      - run: npm ci
-
-      - run: npm run build
+      - name: Build Frontend
+        run: |
+          npm ci
+          npm run build
 
       - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -26,8 +27,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "dist/*"
-          target: "/home/ec2-user/react-build"
+          source: "dist/*,server/*,infrastructure/nginx.conf_new"
+          target: "/home/ec2-user/task-manager-devops"
 
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.0.3
@@ -36,6 +37,24 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
+            # Update Frontend files
             sudo rm -rf /usr/share/nginx/html/*
-            sudo cp -r /home/ec2-user/react-build/dist/* /usr/share/nginx/html/
+            sudo cp -r /home/ec2-user/task-manager-devops/dist/* /usr/share/nginx/html/
+            
+            # Update Nginx Config
+            sudo mv /home/ec2-user/task-manager-devops/infrastructure/nginx.conf_new /etc/nginx/nginx.conf
             sudo systemctl restart nginx
+            
+            # Start Backend
+            cd /home/ec2-user/task-manager-devops/server
+            npm install
+            
+            # Use pm2 to manage the process (install if missing)
+            if ! command -v pm2 &> /dev/null
+            then
+                sudo npm install -g pm2
+            fi
+            
+            pm2 delete task-manager-api || true
+            pm2 start index.js --name "task-manager-api"
+            pm2 save
