@@ -46,3 +46,37 @@ The following secrets are required in GitHub Actions for the pipeline to functio
 - `EC2_HOST`: Public IP of the AWS instance.
 - `EC2_USERNAME`: Usually `ec2-user`.
 - `EC2_PRIVATE_KEY`: The RSA private key (.pem) for SSH access.
+
+## 🛠️ End-to-End Workflow (How to Deploy from Scratch)
+
+If you want to reproduce this entire project, here is the exact order of steps:
+
+### 1. Infrastructure Setup (Terraform)
+- Navigate to `infrastructure/`.
+- Run `terraform init` to download the AWS provider.
+- Run `terraform apply` to create the EC2 server, S3 bucket, and Security Groups.
+- **Output**: You will get the **Public IP** and a **.pem key file**.
+
+### 2. Manual Server Preparation (Done once)
+- Connect to your new server via SSH.
+- Install the "Big Three" softwares: **Git**, **Node.js**, and **Nginx**.
+- Ensure Nginx is started: `sudo systemctl start nginx`.
+
+### 3. Connect GitHub to AWS
+- Go to your GitHub repository **Settings** -> **Secrets**.
+- Add your `EC2_HOST` (The IP from Step 1).
+- Add your `EC2_PRIVATE_KEY` (The content of the .pem file).
+- Add the `EC2_USERNAME` (ec2-user).
+
+### 4. Continuous Deployment (The Automation)
+- Push your code to the `main` branch.
+- **GitHub Actions** will automatically:
+    - Build your React Frontend.
+    - Securely copy the `client/dist` and `server` folders to the AWS server.
+    - Create a `.env` file for the backend.
+    - Start the Node.js backend using **PM2**.
+    - Configure **Nginx** to serve the site and proxy API requests.
+
+### 5. Success!
+- Visit your IP address in the browser.
+- The Frontend loads (Nginx) -> You click "Signup" -> Nginx proxies to Node.js (PM2) -> Success!
