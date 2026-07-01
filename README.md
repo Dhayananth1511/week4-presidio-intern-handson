@@ -83,3 +83,5 @@ If you want to reproduce this entire project, here is the exact order of steps:
 ### 5. Success!
 - Visit your IP address in the browser.
 - The Frontend loads (Nginx) -> You click "Signup" -> Nginx proxies to Node.js (PM2) -> Success!
+
+Redeploying to new IP: 65.2.123.192
