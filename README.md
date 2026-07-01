@@ -42,7 +42,7 @@ Every code push to the `main` branch triggers a multi-step deployment:
 
 ## 🌐 Live Access
 The application is live and accessible at:
-- **URL**: [http://13.127.81.17](http://13.127.81.17)
+- **URL**: [http://65.2.123.192](http://65.2.123.192)
 
 ## 🔑 Environment Secrets
 The following secrets are required in GitHub Actions for the pipeline to function:
